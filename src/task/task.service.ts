@@ -11,8 +11,8 @@ export class TaskService {
 
   constructor( @InjectRepository(Task) private readonly task: Repository<Task>) {}
 
-  async create(todo_task: CreateTaskDto) {
-    const task = this.task.create(todo_task);
+  async create(todoTask: CreateTaskDto) {
+    const task = this.task.create(todoTask);
     return await this.task.save(task);
   }
 

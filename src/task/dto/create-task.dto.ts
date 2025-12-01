@@ -1,10 +1,7 @@
-import { IsString, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsOptional, IsEnum } from 'class-validator';
+import { TaskStatus } from '../entities/task.entity';
 
 export class CreateTaskDto {
-    @IsNotEmpty()
-    @IsNumber()
-    readonly id: number;
-
     @IsNotEmpty()
     @IsString()
     readonly title: string;
@@ -14,6 +11,6 @@ export class CreateTaskDto {
     readonly description?: string;
 
     @IsOptional()
-    @IsString()
-    readonly status?: string;
+    @IsEnum(TaskStatus)
+    readonly status?: TaskStatus;
 }

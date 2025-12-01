@@ -1,12 +1,9 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateTaskDto } from './create-task.dto';
-import { IsString, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsOptional, IsEnum } from 'class-validator';
+import { TaskStatus } from '../entities/task.entity';
 
 export class UpdateTaskDto extends PartialType(CreateTaskDto) {
-    @IsNotEmpty()
-    @IsNumber()
-    readonly id: number;
-
     @IsOptional()
     @IsString()
     readonly title?: string;
@@ -16,6 +13,6 @@ export class UpdateTaskDto extends PartialType(CreateTaskDto) {
     readonly description?: string;
 
     @IsOptional()
-    @IsString()
-    readonly status?: string;
+    @IsEnum(TaskStatus)
+    readonly status?: TaskStatus;
 }
