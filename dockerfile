@@ -1,39 +1,25 @@
-# Stage 1: Build
-FROM node:20-alpine AS builder
-
-# Set working directory
+FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Copy package.json and package-lock.json first
-# เพื่อใช้ cache การติดตั้ง dependencies
 COPY package*.json ./
+RUN npm ci
 
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application code
 COPY . .
-
-# Build the NestJS project
 RUN npm run build
 
-# Stage 2: Production
-FROM node:20-alpine
 
-# Set working directory
+FROM node:18-alpine AS production
+
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nestjs -u 1001
+
 WORKDIR /app
-
-# Copy package.json and package-lock.json (เพื่อ install production deps)
 COPY package*.json ./
 
-# Install only production dependencies
-RUN npm install --only=production
+RUN npm ci --only=production && npm cache clean --force
+COPY --from=builder --chown=nestjs:nodejs /app/dist ./dist
 
-# Copy built files from builder
-COPY --from=builder /app/dist ./dist
-
-# Expose port (ตามที่ NestJS app ใช้)
+USER nestjs
 EXPOSE 3000
 
-# Start the app
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/main"]

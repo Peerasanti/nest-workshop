@@ -1,7 +1,9 @@
+version: '3.8'
+
 services:
   postgres:
     image: postgres:16
-    container_name: todo-list
+    container_name: postgres
     restart: always
     ports:
       - "5432:5432"
@@ -11,6 +13,11 @@ services:
       POSTGRES_DB: nestdb
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - nest-network
 
 volumes:
   pgdata:
+
+networks:
+  nest-network:
